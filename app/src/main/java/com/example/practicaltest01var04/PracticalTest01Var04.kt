@@ -1,6 +1,9 @@
 package com.example.practicaltest01var04
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -27,10 +30,20 @@ class PracticalTest01Var04 : AppCompatActivity() {
 
     private lateinit var textDisp: TextView
 
+    private val messageBroadcastReceiver = MessageBroadcastReceiver()
+    var isRegsteredReceiver = false
+    private val intentFilter = IntentFilter()
+
+    private var serviceStatus = Constants.SERVICE_STOPPED
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_practical_test01_var04_main)
+
+        for (action in Constants.SERVICE_ACTIONS) {
+            intentFilter.addAction(action)
+        }
 
         buttonDisp = findViewById<Button>(R.id.dispButton)
         buttonNav = findViewById<Button>(R.id.navSec)
@@ -61,6 +74,17 @@ class PracticalTest01Var04 : AppCompatActivity() {
             }
 
             textDisp.text = textToShow
+
+            if (!text1.text.toString().isEmpty() && !text2.text.toString().isEmpty() &&
+                serviceStatus == Constants.SERVICE_STOPPED) {
+                Log.d("[ColocviuModelOCW]", "Starting service")
+                val intent = Intent(applicationContext, PracticalTest01Var04Service::class.java)
+                intent.putExtra(Constants.TEXT1_KEY_SERVICE, text1.text.toString())
+                intent.putExtra(Constants.TEXT2_KEY_SERVICE, text2.text.toString())
+
+                applicationContext.startService(intent)
+                serviceStatus = Constants.SERVICE_STARTED
+            }
         }
 
         val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -144,6 +168,11 @@ class PracticalTest01Var04 : AppCompatActivity() {
 
     override fun onPause() {
         Log.d("[ColocviuModelOCW]", "onPause() called")
+        if (isRegsteredReceiver) {
+            unregisterReceiver(messageBroadcastReceiver)
+            isRegsteredReceiver = false
+        }
+
         super.onPause()
     }
 
@@ -160,6 +189,11 @@ class PracticalTest01Var04 : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.d("[ColocviuModelOCW]", "onResume() called")
+
+        if (!isRegsteredReceiver) {
+            registerReceiver(messageBroadcastReceiver, intentFilter, RECEIVER_EXPORTED)
+            isRegsteredReceiver = true
+        }
     }
 
     override fun onRestart() {
@@ -169,6 +203,15 @@ class PracticalTest01Var04 : AppCompatActivity() {
 
     override fun onDestroy() {
         Log.d("[ColocviuModelOCW]", "onDestroy() called")
+        val intent: Intent = Intent(this, PracticalTest01Var04Service::class.java)
+        stopService(intent)
         super.onDestroy()
     }
+
+    private inner class MessageBroadcastReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("[ColocviuModelOCW]", intent?.getStringExtra(Constants.BROADCAST_KEY) ?: "")
+        }
+    }
+
 }
