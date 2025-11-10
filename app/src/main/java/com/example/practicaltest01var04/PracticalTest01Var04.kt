@@ -1,20 +1,153 @@
 package com.example.practicaltest01var04
 
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.Log
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class PracticalTest01Var04 : AppCompatActivity() {
+    private lateinit var buttonDisp: Button
+    private lateinit var buttonNav: Button
+
+    private lateinit var cb1: CheckBox
+    private lateinit var cb2: CheckBox
+
+    private lateinit var text1: EditText
+    private lateinit var text2: EditText
+
+    private lateinit var textDisp: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_practical_test01_var04_main)
+
+        buttonDisp = findViewById<Button>(R.id.dispButton)
+        buttonNav = findViewById<Button>(R.id.navSec)
+
+        cb1 = findViewById<CheckBox>(R.id.cb1)
+        cb2 = findViewById<CheckBox>(R.id.cb2)
+
+        text1 = findViewById<EditText>(R.id.text1)
+        text2 = findViewById<EditText>(R.id.text2)
+
+        textDisp = findViewById<TextView>(R.id.dispText)
+
+        buttonDisp.setOnClickListener {
+            var textToShow = ""
+
+            if (cb1.isChecked) {
+                if (text1.text.toString().isEmpty())
+                    Toast.makeText(this, "First field is empty", Toast.LENGTH_SHORT).show()
+                else
+                    textToShow += text1.text
+            }
+
+            if (cb2.isChecked) {
+                if (text2.text.toString().isEmpty())
+                    Toast.makeText(this, "Second field is empty", Toast.LENGTH_SHORT).show()
+                else
+                    textToShow += text2.text
+            }
+
+            textDisp.text = textToShow
+        }
+
+        if (savedInstanceState != null) {
+            var restoredVal = ""
+
+            if (savedInstanceState.containsKey(Constants.TEXT1)) {
+                restoredVal = savedInstanceState.getString(Constants.TEXT1, "")
+            }
+            text1.setText(restoredVal)
+
+            if (savedInstanceState.containsKey(Constants.TEXT2)) {
+                restoredVal = savedInstanceState.getString(Constants.TEXT2, "")
+            }
+            text2.setText(restoredVal)
+
+            if (savedInstanceState.containsKey(Constants.TEXT_DISP)) {
+                restoredVal = savedInstanceState.getString(Constants.TEXT_DISP, "")
+            }
+            textDisp.text = restoredVal
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onSaveInstanceState(
+        savedInstanceState: Bundle
+    ) {
+        super.onSaveInstanceState(savedInstanceState)
+        savedInstanceState.putString(Constants.TEXT1, text1.text.toString())
+        savedInstanceState.putString(Constants.TEXT2, text2.text.toString())
+        savedInstanceState.putString(Constants.TEXT_DISP, textDisp.text.toString())
+
+        Log.d("[ColocviuModelOCW]",
+            "onSaveInstanceState() called and ${text1.text} ${text2.text}"
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d("[ColocviuModelOCW]", "onRestoreInstanceState() called")
+        var restoredVal = ""
+
+        if (savedInstanceState.containsKey(Constants.TEXT1)) {
+            restoredVal = savedInstanceState.getString(Constants.TEXT1, "")
+        }
+        text1.setText(restoredVal)
+
+        if (savedInstanceState.containsKey(Constants.TEXT2)) {
+            restoredVal = savedInstanceState.getString(Constants.TEXT2, "")
+        }
+        text2.setText(restoredVal)
+
+        if (savedInstanceState.containsKey(Constants.TEXT_DISP)) {
+            restoredVal = savedInstanceState.getString(Constants.TEXT_DISP, "")
+        }
+        textDisp.text = restoredVal
+    }
+
+    override fun onPause() {
+        Log.d("[ColocviuModelOCW]", "onPause() called")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("[ColocviuModelOCW]", "onStop() called")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("[ColocviuModelOCW]", "onStart() called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("[ColocviuModelOCW]", "onResume() called")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d("[ColocviuModelOCW]", "onRestart() called")
+    }
+
+    override fun onDestroy() {
+        Log.d("[ColocviuModelOCW]", "onDestroy() called")
+        super.onDestroy()
     }
 }

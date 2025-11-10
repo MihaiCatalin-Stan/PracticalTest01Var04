@@ -27,6 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/navSec"
             android:layout_alignParentRight="true"
+            android:translationX="50dp"
+            android:saveEnabled="false"
             android:inputType="text"></EditText>
         <CheckBox
             android:id="@+id/cb2"
@@ -39,6 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text1"
             android:layout_alignParentRight="true"
+            android:translationX="50dp"
+            android:saveEnabled="false"
             android:inputType="text"></EditText>
         <Button
             android:id="@+id/dispButton"
