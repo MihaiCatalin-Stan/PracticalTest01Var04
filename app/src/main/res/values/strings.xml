@@ -2,4 +2,6 @@
     <string name="app_name">PracticalTest01Var04</string>
     <string name="navSec">Navigate to secondary activity</string>
     <string name="dispInfo">Display Information</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

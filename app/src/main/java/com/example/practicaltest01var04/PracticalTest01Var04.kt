@@ -1,5 +1,6 @@
 package com.example.practicaltest01var04
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -59,6 +61,25 @@ class PracticalTest01Var04 : AppCompatActivity() {
             }
 
             textDisp.text = textToShow
+        }
+
+        val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result ->
+            if (result.resultCode == Constants.RESULT_OK) {
+                Toast.makeText(this, "User pressed OK", Toast.LENGTH_SHORT).show()
+            } else if (result.resultCode == Constants.RESULT_CANCEL) {
+                Toast.makeText(this, "User pressed Cancel", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "User pressed ???", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        buttonNav.setOnClickListener {
+            val intent =
+                Intent(this@PracticalTest01Var04, PracticalTest01Var04SecondaryActivity::class.java)
+            intent.putExtra(Constants.TEXT1_KEY, text1.text.toString())
+            intent.putExtra(Constants.TEXT2_KEY, text2.text.toString())
+            activityLauncher.launch(intent)
         }
 
         if (savedInstanceState != null) {
